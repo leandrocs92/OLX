@@ -29,6 +29,32 @@ const apiFetchPost = async (endpoint, body) => {
   return json;
 }
 
+const apiFetchPut = async (endpoint, body) => {
+  if(!body.token) {{
+    let token = Cookies.get('token');
+    if(token) {
+      body.token = token;
+    }
+  }}
+
+  const res = await fetch(BASEAPI+endpoint, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  const json = await res.json();
+
+  if(json.notallowed) {
+    window.location.href = '/signin';
+    return;
+  }
+
+  return json;
+}
+
 const apiFetchGet = async (endpoint, body = []) => {
   if(!body.token) {{
     let token = Cookies.get('token');
@@ -38,6 +64,28 @@ const apiFetchGet = async (endpoint, body = []) => {
   }}
 
   const res = await fetch(`${BASEAPI+endpoint}?${qs.stringify(body)}`)
+  const json = await res.json();
+
+  if(json.notallowed) {
+    window.location.href = '/signin';
+    return;
+  }
+
+  return json;
+}
+
+const apiFetchFile = async (endpoint, body) => {
+  if(!body.token) {{
+    let token = Cookies.get('token');
+    if(token) {
+      body.append('token', token);
+    }
+  }}
+
+  const res = await fetch(BASEAPI+endpoint, {
+    method: 'POST',
+    body
+  });
   const json = await res.json();
 
   if(json.notallowed) {
@@ -93,6 +141,38 @@ const OlxAPI = {
     const json = await apiFetchGet(
       'ad/item',
       {id, other}
+    );
+    return json;
+  },
+
+  addAd: async (fData) => {
+    const json = await apiFetchFile(
+      '/ad/add',
+      fData
+    );
+    return json;
+  },
+
+  getAccount: async (token) => {
+    const json = await apiFetchGet(
+      '/user/me',
+      token
+    );
+    return json;
+  },
+
+  setUser: async (token, name, email, state, password) => {
+    const json = await apiFetchPut(
+      '/user/me',
+      {token, name, email, state, password}
+    );
+    return json;
+  },
+
+  setPost: async (id, token, status, title, category, price, priceNegotiable, description, images, img) => {
+    const json = await apiFetchPost(
+      `/ad/${id}`,
+      {token, status, title, category, price, priceNegotiable, description, images, img}
     );
     return json;
   },
