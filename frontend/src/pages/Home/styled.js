@@ -22,6 +22,15 @@ export const PageArea = styled.div`
     display: inline-block;
     margin-top: 10px;
   }
+
+  @media (max-width: 600px) {
+
+    margin: 10px;
+
+    .list .adItem {
+      width: 50%;
+    }
+  }
 `;
 
 export const SearchArea = styled.div`
@@ -101,6 +110,28 @@ export const SearchArea = styled.div`
         height: 45px;
         margin-right: 10px;
       }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .searchBox form {
+      flex-direction: column;
+
+      input {
+        padding: 10px;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+
+      select {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+
+    .categoryList .categoryItem {
+      width: 50%;
+      padding: 10px;
     }
   }
 `;
